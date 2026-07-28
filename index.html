@@ -290,7 +290,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // CONFIGURAÇÃO DO FIREBASE FORNECIDA (Com fallback de ambiente para garantir execução)
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'portal-agencia';
@@ -453,17 +453,14 @@
         // LÓGICA DO CLIENTE
         // ==========================================
         function initClientData(clientEmail) {
-            const q = query(deliveriesCollectionRef);
+            // Agora consultamos no banco APENAS o documento que pertence a este e-mail
+            const q = query(deliveriesCollectionRef, where("clientEmail", "==", clientEmail.toLowerCase()));
             
             onSnapshot(q, (snapshot) => {
-                // Filtramos em memória por causa da Regra 2 (No Complex Queries)
-                const deliveries = [];
-                snapshot.forEach(doc => deliveries.push(doc.data()));
-                
-                // Encontrar a entrega deste cliente
-                const myDelivery = deliveries.find(d => d.clientEmail.toLowerCase() === clientEmail.toLowerCase());
+                if (!snapshot.empty) {
+                    // Pega o primeiro site que encontrar para este cliente
+                    const myDelivery = snapshot.docs[0].data();
 
-                if (myDelivery) {
                     document.getElementById('client-no-project').classList.add('hidden');
                     document.getElementById('client-has-project').classList.remove('hidden');
                     document.getElementById('client-has-project').classList.add('flex');
