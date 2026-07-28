@@ -405,9 +405,11 @@
             } catch (error) {
                 console.error("Auth Error:", error);
                 let msg = 'Erro na autenticação.';
-                if(error.code === 'auth/wrong-password') msg = 'Senha incorreta.';
+                if(error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') msg = 'E-mail ou senha incorretos.';
                 if(error.code === 'auth/user-not-found') msg = 'Usuário não encontrado. Crie uma conta primeiro.';
                 if(error.code === 'auth/email-already-in-use') msg = 'Este e-mail já está em uso.';
+                if(error.code === 'auth/operation-not-allowed') msg = 'ERRO DE CONFIGURAÇÃO: Vá no painel do Firebase > Authentication > Sign-in method e ative "E-mail/senha".';
+                
                 showToast(msg, 'error');
                 setBtnLoading(btn, false);
             }
@@ -568,6 +570,7 @@
                 
                 let msg = error.message;
                 if (error.code === 'auth/weak-password') msg = 'A senha deve ter pelo menos 6 caracteres.';
+                if (error.code === 'auth/operation-not-allowed') msg = 'O login por E-mail/Senha não está ativado no Firebase. Ative em Authentication > Sign-in method.';
                 
                 showToast('Erro ao salvar: ' + msg, 'error');
             } finally {
