@@ -63,8 +63,8 @@
             pointer-events: none;
         }
 
-        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
-        .slide-up { animation: slideUp 0.8s ease-out forwards; }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .slide-up { animation: slideUp 0.5s ease-out forwards; }
 
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -76,96 +76,102 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Oculta scrollbar mas permite scroll */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col relative">
 
-    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2"></div>
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
+    <!-- TELA DE LOGIN / REGISTRO -->
     <div id="login-view" class="flex-1 flex items-center justify-center p-4 fade-in z-10">
         <div class="glass-panel rounded-2xl w-full max-w-md p-8 shadow-2xl relative overflow-hidden">
-            <!-- Detalhe visual -->
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-agency-500 to-agency-400"></div>
             
             <div class="text-center mb-8">
                 <h1 class="text-3xl font-serif text-white mb-2">Portal do Cliente</h1>
-                <p class="text-slate-400 text-sm">Acesse sua área restrita para visualizar seu projeto.</p>
+                <p id="auth-subtitle" class="text-slate-400 text-sm">Acesse sua área restrita para visualizar seu projeto.</p>
             </div>
 
             <form id="login-form" class="space-y-5">
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1" for="email">E-mail corporativo</label>
+                    <label class="block text-sm font-medium text-slate-300 mb-1" for="email">E-mail</label>
                     <input type="email" id="email" required placeholder="cliente@empresa.com" 
                         class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-agency-500 focus:ring-1 focus:ring-agency-500 transition-all">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1" for="password">Senha de acesso</label>
-                    <input type="password" id="password" required placeholder="••••••••" 
+                    <label class="block text-sm font-medium text-slate-300 mb-1" for="password">Senha</label>
+                    <input type="password" id="password" required placeholder="••••••••" minlength="6"
                         class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-agency-500 focus:ring-1 focus:ring-agency-500 transition-all">
                 </div>
                 
                 <button type="submit" id="btn-login" 
                     class="w-full bg-agency-500 hover:bg-agency-400 text-white font-medium py-3 rounded-lg transition-colors shadow-[0_0_15px_rgba(59,130,246,0.4)] hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] flex justify-center items-center gap-2">
-                    <span>Acessar Projeto</span>
+                    <span id="btn-login-text">Acessar Projeto</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </button>
             </form>
-            <div class="mt-6 text-center text-xs text-slate-500">
-                Desenvolvido por <span class="text-slate-300 font-medium">Sua Agência</span>
+
+            <div class="mt-6 text-center text-sm text-slate-400">
+                <button id="toggle-auth-mode" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-4">
+                    Primeiro acesso? Crie sua conta
+                </button>
+            </div>
+            <div class="mt-6 text-center text-xs text-slate-600">
+                Acesso Administrativo: willdalves1@gmail.com
             </div>
         </div>
     </div>
 
-    <div id="dashboard-view" class="hidden flex-1 flex-col fade-in relative z-10">
-        
-        <!-- Navbar -->
+    <!-- TELA DO CLIENTE (DASHBOARD DE ENTREGA) -->
+    <div id="client-dashboard-view" class="hidden flex-1 flex-col fade-in relative z-10">
         <header class="glass-panel border-b-0 border-slate-800 py-4 px-6 md:px-12 flex justify-between items-center sticky top-0 z-20">
             <div class="font-serif text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
                 Portal do Cliente
             </div>
             <div class="flex items-center gap-4">
                 <div class="text-sm text-slate-400 hidden sm:block">
-                    Bem-vindo, <span id="user-display" class="text-white font-medium">Cliente</span>
+                    Logado como: <span id="client-user-display" class="text-white font-medium">...</span>
                 </div>
-                <button id="btn-logout" class="text-sm px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700">
-                    Sair
-                </button>
+                <button class="btn-logout text-sm px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700">Sair</button>
             </div>
         </header>
 
-        <main class="flex-1 max-w-7xl w-full mx-auto p-6 md:p-12 flex flex-col lg:flex-row gap-12 items-center lg:items-stretch">
-            
-            <!-- Lado Esquerdo: Imagem formato Stories -->
+        <!-- Estado: Sem Projeto -->
+        <main id="client-no-project" class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center">
+            <div class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mb-6">
+                <svg class="w-10 h-10 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h2 class="text-3xl font-serif text-white mb-3">Nenhum projeto encontrado</h2>
+            <p class="text-slate-400 max-w-md">Ainda não há nenhum site liberado para este e-mail. Se você acabou de contratar, aguarde a liberação da nossa equipe.</p>
+        </main>
+
+        <!-- Estado: Com Projeto -->
+        <main id="client-has-project" class="hidden flex-1 max-w-7xl w-full mx-auto p-6 md:p-12 flex flex-col lg:flex-row gap-12 items-center lg:items-stretch">
             <div class="w-full max-w-sm shrink-0 slide-up" style="animation-delay: 0.1s;">
                 <div class="story-thumb rounded-3xl border border-slate-700 flex flex-col items-center justify-center p-6 text-center">
                     <div class="story-glow rounded-3xl"></div>
-                    
-                    <!-- Mockup ou Logo animado -->
                     <div class="w-24 h-24 mb-6 rounded-full bg-gradient-to-tr from-agency-500 to-purple-500 p-1 animate-pulse">
                         <div class="w-full h-full bg-agency-900 rounded-full flex items-center justify-center">
                             <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
                         </div>
                     </div>
-                    
                     <h3 class="text-2xl font-serif font-bold text-white mb-2 leading-tight">SEU NOVO SITE<br>ESTÁ NO AR</h3>
                     <p class="text-agency-400 text-sm font-medium mb-8 uppercase tracking-widest">Lançamento Oficial</p>
                     
-                    <!-- Simulação de imagem de site -->
                     <div class="w-full bg-slate-800 rounded-xl flex-1 border border-slate-700 overflow-hidden relative group">
-                        <img src="https://placehold.co/600x800/1e293b/ffffff?text=Preview+do+Site\n(Design+Profissional)" alt="Preview do Site" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
-                        <div class="absolute inset-0 bg-gradient-to-t from-agency-900 via-transparent to-transparent"></div>
+                        <!-- Imagem dinâmica inserida pelo JS -->
+                        <img id="client-thumb-img" src="" alt="Preview do Site" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                        <div class="absolute inset-0 bg-gradient-to-t from-agency-900 via-transparent to-transparent pointer-events-none"></div>
                     </div>
                 </div>
             </div>
 
             <div class="flex-1 flex flex-col justify-center slide-up" style="animation-delay: 0.3s;">
-                
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-agency-500/10 border border-agency-500/20 text-agency-400 text-sm font-medium w-max mb-6">
                     <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                    Projeto Concluído
+                    Projeto Entregue
                 </div>
 
                 <h2 class="text-4xl md:text-5xl font-serif font-bold text-white mb-6 leading-tight">
@@ -174,12 +180,7 @@
                 </h2>
 
                 <div class="space-y-6 text-slate-300 text-lg leading-relaxed mb-10">
-                    <p>
-                        É com grande satisfação que entregamos a sua nova plataforma digital. Desenvolvemos este projeto de forma estratégica, unindo design de alto padrão e as melhores tecnologias de performance e conversão.
-                    </p>
-                    <p>
-                        Seu site agora é uma ferramenta poderosa, pronta para atrair clientes, transmitir autoridade e alavancar os resultados do seu negócio no ambiente digital.
-                    </p>
+                    <p id="client-message-text" class="whitespace-pre-line"></p>
                     <div class="p-5 rounded-xl glass-panel border-l-4 border-l-agency-500">
                         <h4 class="text-white font-medium mb-2">Próximos passos:</h4>
                         <ul class="list-disc list-inside text-sm text-slate-400 space-y-2">
@@ -190,87 +191,151 @@
                     </div>
                 </div>
 
-                <!-- Botão Principal de Acesso -->
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="https://www.sitedosclientes.com.br" target="_blank" 
+                    <a id="client-site-link" href="#" target="_blank" 
                         class="px-8 py-4 rounded-xl bg-gradient-to-r from-agency-500 to-blue-600 hover:from-agency-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3">
                         Acessar Meu Site
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                     </a>
-                    
-                    <button id="btn-support" class="px-8 py-4 rounded-xl glass-panel text-white font-semibold hover:bg-slate-800 transition-all flex items-center justify-center gap-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                        Falar com Suporte
-                    </button>
                 </div>
             </div>
         </main>
-        
-        <!-- Elementos de fundo dinâmicos (efeito visual premium) -->
-        <div class="fixed top-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-agency-500/10 blur-[120px] pointer-events-none -z-10"></div>
-        <div class="fixed bottom-[-20%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none -z-10"></div>
     </div>
+
+    <!-- TELA DO ADMIN -->
+    <div id="admin-dashboard-view" class="hidden flex-1 flex-col fade-in relative z-10">
+        <header class="glass-panel border-b border-slate-800 py-4 px-6 flex justify-between items-center sticky top-0 z-20 bg-agency-900/90">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded bg-agency-500 flex items-center justify-center text-white font-bold">A</div>
+                <div class="font-serif text-xl font-bold text-white">Painel Administrador</div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-sm text-slate-400 hidden sm:block">willdalves1@gmail.com</span>
+                <button class="btn-logout text-sm px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors border border-red-500/20">Sair</button>
+            </div>
+        </header>
+
+        <main class="flex-1 max-w-6xl w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Coluna: Adicionar Novo Cliente -->
+            <div class="lg:col-span-1">
+                <div class="glass-panel p-6 rounded-2xl border border-slate-700 sticky top-24">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-agency-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Nova Entrega
+                    </h3>
+                    <form id="admin-form" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">E-mail do Cliente (Login)</label>
+                            <input type="email" id="admin-client-email" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-agency-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Link do Site Final (URL)</label>
+                            <input type="url" id="admin-site-url" required placeholder="https://www.sitedosclientes.com.br" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-agency-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Link da Imagem (Thumb Stories)</label>
+                            <input type="url" id="admin-thumb-url" required placeholder="https://link-da-imagem.jpg" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-agency-500">
+                            <p class="text-[10px] text-slate-500 mt-1">Hospede a imagem e cole o link direto aqui (proporção 9:16).</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Mensagem de Entrega</label>
+                            <textarea id="admin-message" required rows="4" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-agency-500 resize-none">É com grande satisfação que entregamos a sua nova plataforma digital. Desenvolvemos este projeto de forma estratégica, unindo design de alto padrão e as melhores tecnologias.</textarea>
+                        </div>
+                        <button type="submit" id="btn-admin-save" class="w-full bg-agency-500 hover:bg-agency-400 text-white font-medium py-2 rounded-lg transition-colors text-sm">
+                            Salvar e Liberar Acesso
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Coluna: Lista de Entregas -->
+            <div class="lg:col-span-2">
+                <div class="glass-panel p-6 rounded-2xl border border-slate-700 h-full">
+                    <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-agency-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        Clientes e Entregas Registradas
+                    </h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-700 text-xs uppercase text-slate-400">
+                                    <th class="pb-3 font-medium">E-mail do Cliente</th>
+                                    <th class="pb-3 font-medium">Site</th>
+                                    <th class="pb-3 font-medium text-right">Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-deliveries-list" class="text-sm divide-y divide-slate-800/50">
+                                <!-- Preenchido via JS -->
+                                <tr><td colspan="3" class="py-4 text-center text-slate-500">Carregando dados...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Elementos de fundo dinâmicos (efeito visual premium) -->
+    <div class="fixed top-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-agency-500/10 blur-[120px] pointer-events-none -z-10"></div>
+    <div class="fixed bottom-[-20%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none -z-10"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Configuração do ambiente dinâmico
+        // CONFIGURAÇÃO DO FIREBASE FORNECIDA (Com fallback de ambiente para garantir execução)
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'portal-agencia';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            // Fake config para evitar erros se rodado localmente sem o ambiente
-            apiKey: "mock", authDomain: "mock", projectId: "mock"
+        
+        // Usamos as credenciais que você forneceu, mas mesclamos com o ambiente se necessário
+        const userFirebaseConfig = {
+            apiKey: "AIzaSyBz5sHPyHIJhrAxi4beaup297Es8XIpNVs",
+            authDomain: "webapp-181df.firebaseapp.com",
+            projectId: "webapp-181df",
+            storageBucket: "webapp-181df.firebasestorage.app",
+            messagingSenderId: "148368554881",
+            appId: "1:148368554881:web:d4fd10ed7e3abfc6d98680",
+            measurementId: "G-4Y8P9JQYNY"
         };
-        const initialToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : userFirebaseConfig;
 
         // Inicializa Firebase
-        let app, auth, db;
-        try {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-        } catch (e) {
-            console.error("Erro ao inicializar Firebase", e);
-        }
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Constante Admin
+        const ADMIN_EMAIL = 'willdalves1@gmail.com';
 
         // Variáveis de Estado UI
         const views = {
             login: document.getElementById('login-view'),
-            dashboard: document.getElementById('dashboard-view')
+            clientDashboard: document.getElementById('client-dashboard-view'),
+            adminDashboard: document.getElementById('admin-dashboard-view')
         };
-        const ui = {
-            loginForm: document.getElementById('login-form'),
-            emailInput: document.getElementById('email'),
-            passInput: document.getElementById('password'),
-            btnLogin: document.getElementById('btn-login'),
-            btnLogout: document.getElementById('btn-logout'),
-            btnSupport: document.getElementById('btn-support'),
-            userDisplay: document.getElementById('user-display'),
-            toastContainer: document.getElementById('toast-container')
-        };
+        
+        let isLoginMode = true; // true = Login, false = Register
 
+        // Utils UI
         function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             const colors = {
                 success: 'bg-green-500/20 border-green-500/50 text-green-300',
                 error: 'bg-red-500/20 border-red-500/50 text-red-300',
                 info: 'bg-blue-500/20 border-blue-500/50 text-blue-300'
             };
-            
-            toast.className = `px-4 py-3 rounded-lg border backdrop-blur-md shadow-lg transform transition-all duration-300 translate-x-full ${colors[type]}`;
+            toast.className = `px-4 py-3 rounded-lg border backdrop-blur-md shadow-lg transform transition-all duration-300 translate-x-full pointer-events-auto ${colors[type]}`;
             toast.innerHTML = `<p class="text-sm font-medium">${message}</p>`;
-            
-            ui.toastContainer.appendChild(toast);
-            
-            // Animação de entrada
+            container.appendChild(toast);
             setTimeout(() => toast.classList.remove('translate-x-full'), 10);
-            
-            // Remove após 3.5s
             setTimeout(() => {
                 toast.classList.add('translate-x-full');
                 setTimeout(() => toast.remove(), 300);
-            }, 3500);
+            }, 4000);
         }
 
         function switchView(viewName) {
@@ -279,7 +344,7 @@
                 v.classList.remove('flex');
             });
             views[viewName].classList.remove('hidden');
-            if(viewName === 'dashboard') {
+            if(viewName.includes('dashboard')) {
                 views[viewName].classList.add('flex');
             }
         }
@@ -288,7 +353,7 @@
             if (isLoading) {
                 btn.disabled = true;
                 btn.dataset.originalText = btn.innerHTML;
-                btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Acessando...`;
+                btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
                 btn.classList.add('opacity-80', 'cursor-not-allowed');
             } else {
                 btn.disabled = false;
@@ -297,100 +362,198 @@
             }
         }
 
-        
-        // 1. REGRA MANDATÓRIA: Autenticar o ambiente da plataforma primeiro
-        async function initEnvironmentAuth() {
-            try {
-                if (initialToken) {
-                    await signInWithCustomToken(auth, initialToken);
-                    console.log("Ambiente autenticado (Custom Token)");
-                } else {
-                    await signInAnonymously(auth);
-                    console.log("Ambiente autenticado (Anônimo)");
-                }
-            } catch (err) {
-                console.error("Erro na autenticação do sistema:", err);
+        // Alternar entre Login e Criar Conta
+        document.getElementById('toggle-auth-mode').addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-subtitle').textContent = isLoginMode ? 'Acesse sua área restrita para visualizar seu projeto.' : 'Crie sua conta de acesso ao portal.';
+            document.getElementById('btn-login-text').textContent = isLoginMode ? 'Acessar Projeto' : 'Criar Conta';
+            document.getElementById('toggle-auth-mode').textContent = isLoginMode ? 'Primeiro acesso? Crie sua conta' : 'Já tem conta? Faça login';
+        });
+
+        // Submit Form de Auth
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('btn-login');
+
+            if(!email || password.length < 6) {
+                showToast('Preencha corretamente. A senha deve ter no mínimo 6 caracteres.', 'error');
+                return;
             }
+
+            setBtnLoading(btn, true);
+
+            try {
+                if (isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    showToast('Login realizado com sucesso!', 'success');
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    showToast('Conta criada com sucesso!', 'success');
+                }
+                // O onAuthStateChanged vai assumir a partir daqui
+            } catch (error) {
+                console.error("Auth Error:", error);
+                let msg = 'Erro na autenticação.';
+                if(error.code === 'auth/wrong-password') msg = 'Senha incorreta.';
+                if(error.code === 'auth/user-not-found') msg = 'Usuário não encontrado. Crie uma conta primeiro.';
+                if(error.code === 'auth/email-already-in-use') msg = 'Este e-mail já está em uso.';
+                showToast(msg, 'error');
+                setBtnLoading(btn, false);
+            }
+        });
+
+        // Botões de Logout
+        document.querySelectorAll('.btn-logout').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                await signOut(auth);
+                showToast('Sessão encerrada.', 'info');
+                document.getElementById('login-form').reset();
+                switchView('login');
+            });
+        });
+
+        // Função Central de Roteamento de Usuário
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const btn = document.getElementById('btn-login');
+                setBtnLoading(btn, false); // Limpa loader se estiver ativo
+                
+                if (user.email === ADMIN_EMAIL) {
+                    // É o ADMIN
+                    switchView('adminDashboard');
+                    initAdminData();
+                } else {
+                    // É um CLIENTE
+                    document.getElementById('client-user-display').textContent = user.email;
+                    switchView('clientDashboard');
+                    initClientData(user.email);
+                }
+            } else {
+                switchView('login');
+            }
+        });
+
+        // Referência Base para os Dados (Usando regra de path estrito)
+        // Guardamos as entregas numa coleção pública para que o cliente possa buscar a dele e o admin buscar todas
+        const deliveriesCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'deliveries');
+
+        // ==========================================
+        // LÓGICA DO CLIENTE
+        // ==========================================
+        function initClientData(clientEmail) {
+            const q = query(deliveriesCollectionRef);
+            
+            onSnapshot(q, (snapshot) => {
+                // Filtramos em memória por causa da Regra 2 (No Complex Queries)
+                const deliveries = [];
+                snapshot.forEach(doc => deliveries.push(doc.data()));
+                
+                // Encontrar a entrega deste cliente
+                const myDelivery = deliveries.find(d => d.clientEmail.toLowerCase() === clientEmail.toLowerCase());
+
+                if (myDelivery) {
+                    document.getElementById('client-no-project').classList.add('hidden');
+                    document.getElementById('client-has-project').classList.remove('hidden');
+                    document.getElementById('client-has-project').classList.add('flex');
+
+                    // Injetar dados do BD na UI
+                    document.getElementById('client-thumb-img').src = myDelivery.thumbUrl;
+                    document.getElementById('client-message-text').textContent = myDelivery.message;
+                    document.getElementById('client-site-link').href = myDelivery.siteUrl;
+                } else {
+                    // Cliente logou mas Admin não cadastrou nada para ele ainda
+                    document.getElementById('client-no-project').classList.remove('hidden');
+                    document.getElementById('client-no-project').classList.add('flex');
+                    document.getElementById('client-has-project').classList.add('hidden');
+                    document.getElementById('client-has-project').classList.remove('flex');
+                }
+            }, (error) => {
+                console.error("Erro ao buscar dados do cliente:", error);
+                showToast('Erro ao sincronizar dados.', 'error');
+            });
         }
 
-        // Inicializa Auth do sistema imediatamente
-        initEnvironmentAuth();
 
-        // 2. Lógica de Login do Cliente (Simulada para visualização, mas com estrutura real)
-        ui.loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = ui.emailInput.value.trim();
-            const password = ui.passInput.value;
-            
-            if(!email || !password) {
-                showToast('Preencha email e senha.', 'error');
-                return;
-            }
-
-            setBtnLoading(ui.btnLogin, true);
-
-            // =====================================================================
-            // NOTA PARA PRODUÇÃO (Quando você hospedar no seu próprio domínio):
-            // Descomente o bloco abaixo para usar o Login Real com E-mail/Senha do Firebase.
-            // =====================================================================
-            /*
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-                // Login sucesso!
-            } catch (error) {
-                showToast('Usuário ou senha inválidos.', 'error');
-                setBtnLoading(ui.btnLogin, false);
-                return;
-            }
-            */
-            // =====================================================================
-
-            // SIMULAÇÃO VISUAL: Como estamos em um ambiente de preview e o sistema já
-            // fez o auth anônimo, vamos simular o sucesso visual do login para demonstração.
-            setTimeout(async () => {
+        // ==========================================
+        // LÓGICA DO ADMIN
+        // ==========================================
+        function initAdminData() {
+            // Escuta todas as entregas para listar na tabela
+            onSnapshot(deliveriesCollectionRef, (snapshot) => {
+                const tbody = document.getElementById('admin-deliveries-list');
+                tbody.innerHTML = '';
                 
-                // Formatar o nome a partir do email (ex: joao@empresa -> Joao)
-                const namePart = email.split('@')[0];
-                const displayName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-                
-                ui.userDisplay.textContent = displayName;
-                
-                // Salvar registro de acesso no Firestore (Uso do DB Mandatório)
-                try {
-                    const user = auth.currentUser;
-                    if (user) {
-                        // REGRA: Caminho exato /artifacts/{appId}/users/{userId}/{collectionName}
-                        const logRef = doc(db, 'artifacts', appId, 'users', user.uid, 'accessLogs', Date.now().toString());
-                        await setDoc(logRef, {
-                            clientEmail: email,
-                            accessedAt: serverTimestamp(),
-                            action: 'viewed_dashboard'
-                        });
-                    }
-                } catch (dbErr) {
-                    console.log("Firestore apenas demonstrativo, ignorando erro se houver restrição.", dbErr);
+                if(snapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-slate-500">Nenhuma entrega registrada.</td></tr>';
+                    return;
                 }
 
-                setBtnLoading(ui.btnLogin, false);
-                ui.loginForm.reset();
-                showToast('Acesso liberado com sucesso!', 'success');
-                switchView('dashboard');
-                
-            }, 1200); // delay falso para dar sensação de carregamento de segurança
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const docId = docSnap.id;
+                    
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-800/50 transition-colors";
+                    tr.innerHTML = `
+                        <td class="py-3 pr-4 font-medium text-white">${data.clientEmail}</td>
+                        <td class="py-3 pr-4">
+                            <a href="${data.siteUrl}" target="_blank" class="text-agency-400 hover:text-agency-300 truncate max-w-[200px] inline-block">${data.siteUrl}</a>
+                        </td>
+                        <td class="py-3 text-right">
+                            <button onclick="deleteDelivery('${docId}')" class="text-xs px-2 py-1 bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded border border-red-500/20 transition-colors">Remover</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }, (error) => {
+                console.error("Erro ao buscar entregas admin:", error);
+            });
+        }
+
+        // Salvar Nova Entrega (Admin)
+        document.getElementById('admin-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Segurança extra: verifica se é o admin
+            if(!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) return;
+
+            const btn = document.getElementById('btn-admin-save');
+            const data = {
+                clientEmail: document.getElementById('admin-client-email').value.trim(),
+                siteUrl: document.getElementById('admin-site-url').value.trim(),
+                thumbUrl: document.getElementById('admin-thumb-url').value.trim(),
+                message: document.getElementById('admin-message').value,
+                createdAt: Date.now()
+            };
+
+            setBtnLoading(btn, true);
+
+            try {
+                await addDoc(deliveriesCollectionRef, data);
+                showToast('Entrega registrada com sucesso!', 'success');
+                document.getElementById('admin-form').reset();
+            } catch (error) {
+                console.error("Erro ao salvar entrega:", error);
+                showToast('Erro ao salvar no banco de dados.', 'error');
+            } finally {
+                setBtnLoading(btn, false);
+            }
         });
 
-        ui.btnLogout.addEventListener('click', () => {
-            // Em produção real com auth de email: signOut(auth)
-            showToast('Sessão encerrada.', 'info');
-            switchView('login');
-        });
-
-        ui.btnSupport.addEventListener('click', () => {
-            // Aqui você poderia colocar o link do WhatsApp da sua agência
-            showToast('Redirecionando para o WhatsApp do suporte...', 'info');
-            // window.open('https://wa.me/5579988645865', '_blank');
-        });
+        // Função global para o botão de deletar na tabela
+        window.deleteDelivery = async function(docId) {
+            if(!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) return;
+            // No alert()/confirm() rule -> using direct deletion for simplicity, but showing toast
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'deliveries', docId));
+                showToast('Registro apagado.', 'info');
+            } catch (error) {
+                console.error("Erro ao deletar:", error);
+                showToast('Erro ao tentar remover.', 'error');
+            }
+        }
 
     </script>
 </body>
