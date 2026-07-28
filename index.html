@@ -435,8 +435,8 @@
             }
         });
 
-        // Referência Base para os Dados (Usando regra de path estrito)
-        const deliveriesCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'deliveries');
+        // Referência Base para os Dados (Estrutura simplificada e direta)
+        const deliveriesCollectionRef = collection(db, 'deliveries');
 
         // ==========================================
         // LÓGICA DO CLIENTE
