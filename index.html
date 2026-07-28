@@ -3,295 +3,568 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal do Cliente - Entrega de Projeto</title>
+    <title>Member Kit - Área do Cliente | www.sitedosclientes.com.br</title>
     
-    <!-- Carregando Tailwind CSS -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Configuração do Tailwind para design premium -->
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom Tailwind Config -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        agency: {
-                            900: '#0f172a', // Fundo escuro elegante
-                            800: '#1e293b', // Cards
-                            500: '#3b82f6', // Azul principal
-                            400: '#60a5fa', // Azul claro
-                            gold: '#fbbf24' // Detalhe dourado
-                        }
+                        primary: '#6C63FF',
+                        secondary: '#FF6584',
+                        dark: '#1a1a2e',
+                        light: '#f8f9fa'
                     },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
+                    animation: {
+                        'bounce-slow': 'bounce 3s infinite',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'spin-slow': 'spin 3s linear infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        }
                     }
                 }
             }
         }
     </script>
-
-    <!-- Fontes do Google -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
-        
-        .glass-panel {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .story-thumb {
-            aspect-ratio: 9/16;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .story-glow {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            box-shadow: inset 0 0 40px rgba(59, 130, 246, 0.2);
-            pointer-events: none;
-        }
-
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        .slide-up { animation: slideUp 0.5s ease-out forwards; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col relative">
+<body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen">
 
-    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
-    <!-- TELA DE LOGIN / REGISTRO -->
-    <div id="login-view" class="flex-1 flex items-center justify-center p-4 fade-in z-10">
-        <div class="glass-panel rounded-2xl w-full max-w-md p-8 shadow-2xl relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-agency-500 to-agency-400"></div>
-            
-            <div class="text-center mb-8">
-                <h1 class="text-3xl font-serif text-white mb-2">Portal do Cliente</h1>
-                <p id="auth-subtitle" class="text-slate-400 text-sm">Acesse sua área restrita para visualizar seu projeto.</p>
-            </div>
-
-            <form id="login-form" class="space-y-5">
-                <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1" for="email">E-mail</label>
-                    <input type="email" id="email" required placeholder="cliente@empresa.com" 
-                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-agency-500 focus:ring-1 focus:ring-agency-500 transition-all">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1" for="password">Senha</label>
-                    <input type="password" id="password" required placeholder="••••••••" minlength="6"
-                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-agency-500 focus:ring-1 focus:ring-agency-500 transition-all">
-                </div>
+    <!-- ============ LOGIN PAGE ============ -->
+    <div id="loginPage" class="flex items-center justify-center min-h-screen p-4">
+        <div class="w-full max-w-md">
+            <!-- Login Card -->
+            <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-10 animate-slide-up">
                 
-                <button type="submit" id="btn-login" 
-                    class="w-full bg-agency-500 hover:bg-agency-400 text-white font-medium py-3 rounded-lg transition-colors shadow-[0_0_15px_rgba(59,130,246,0.4)] hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] flex justify-center items-center gap-2">
-                    <span id="btn-login-text">Acessar Projeto</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </button>
-            </form>
+                <!-- Logo e Header -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg mb-4 animate-float">
+                        <i class="fas fa-crown text-4xl text-white"></i>
+                    </div>
+                    <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        Member Kit
+                    </h1>
+                    <p class="text-gray-500 mt-2 text-sm md:text-base">
+                        Área Exclusiva do Cliente
+                    </p>
+                    <div class="flex items-center justify-center gap-2 mt-3">
+                        <span class="w-8 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></span>
+                        <span class="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                        <span class="w-8 h-1 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"></span>
+                    </div>
+                </div>
 
-            <div class="mt-6 text-center text-sm text-slate-400">
-                <button id="toggle-auth-mode" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-4">
-                    Primeiro acesso? Crie sua conta
-                </button>
+                <!-- Login Form -->
+                <form id="loginForm" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-envelope text-indigo-500 mr-2"></i>E-mail
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="email" 
+                                id="email" 
+                                required
+                                placeholder="seu@email.com"
+                                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:bg-white transition-all duration-300 outline-none text-gray-700 placeholder-gray-400"
+                            >
+                            <i class="fas fa-check-circle text-green-500 absolute right-4 top-1/2 -translate-y-1/2 hidden" id="emailValid"></i>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-lock text-indigo-500 mr-2"></i>Senha
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                required
+                                placeholder="Sua senha"
+                                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:bg-white transition-all duration-300 outline-none text-gray-700 placeholder-gray-400"
+                            >
+                            <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-indigo-500 transition-colors">
+                                <i class="fas fa-eye" id="toggleIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="loginButton" class="w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-xl hover:shadow-lg hover:shadow-indigo-500/25 transform hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-3 group">
+                        <i class="fas fa-sign-in-alt group-hover:translate-x-1 transition-transform"></i>
+                        <span>Acessar Painel</span>
+                        <div id="spinner" class="hidden w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    </button>
+
+                    <div class="text-center">
+                        <button type="button" onclick="showForgotPassword()" class="text-indigo-500 hover:text-indigo-700 text-sm font-medium transition-colors">
+                            <i class="fas fa-key mr-1"></i>Esqueceu a senha?
+                        </button>
+                    </div>
+                </form>
+
+                <div id="messageBox" class="hidden mt-4 p-4 rounded-xl text-sm font-medium text-center"></div>
+
+                <div class="mt-6 pt-6 border-t border-gray-100 text-center">
+                    <p class="text-xs text-gray-400">
+                        Protegido por 
+                        <i class="fas fa-shield-alt text-indigo-500"></i>
+                        Firebase Authentication
+                    </p>
+                </div>
             </div>
-            <div class="mt-6 text-center text-xs text-slate-600">
-                Acesso Administrativo: willdalves1@gmail.com
-            </div>
+
+            <p class="text-center text-white/80 text-sm mt-6">
+                © 2024 www.sitedosclientes.com.br
+            </p>
         </div>
     </div>
 
-    <!-- TELA DO CLIENTE (DASHBOARD DE ENTREGA) -->
-    <div id="client-dashboard-view" class="hidden flex-1 flex-col fade-in relative z-10">
-        <header class="glass-panel border-b-0 border-slate-800 py-4 px-6 md:px-12 flex justify-between items-center sticky top-0 z-20">
-            <div class="font-serif text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-                Portal do Cliente
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="text-sm text-slate-400 hidden sm:block">
-                    Logado como: <span id="client-user-display" class="text-white font-medium">...</span>
-                </div>
-                <button class="btn-logout text-sm px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700">Sair</button>
-            </div>
-        </header>
-
-        <!-- Estado: Sem Projeto -->
-        <main id="client-no-project" class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center">
-            <div class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mb-6">
-                <svg class="w-10 h-10 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            </div>
-            <h2 class="text-3xl font-serif text-white mb-3">Nenhum projeto encontrado</h2>
-            <p class="text-slate-400 max-w-md">Ainda não há nenhum site liberado para este e-mail. Se você acabou de contratar, aguarde a liberação da nossa equipe.</p>
-        </main>
-
-        <!-- Estado: Com Projeto -->
-        <main id="client-has-project" class="hidden flex-1 max-w-7xl w-full mx-auto p-6 md:p-12 flex flex-col lg:flex-row gap-12 items-center lg:items-stretch">
-            <div class="w-full max-w-sm shrink-0 slide-up" style="animation-delay: 0.1s;">
-                <div class="story-thumb rounded-3xl border border-slate-700 flex flex-col items-center justify-center p-6 text-center">
-                    <div class="story-glow rounded-3xl"></div>
-                    <div class="w-24 h-24 mb-6 rounded-full bg-gradient-to-tr from-agency-500 to-purple-500 p-1 animate-pulse">
-                        <div class="w-full h-full bg-agency-900 rounded-full flex items-center justify-center">
-                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
-                        </div>
-                    </div>
-                    <h3 class="text-2xl font-serif font-bold text-white mb-2 leading-tight">SEU NOVO SITE<br>ESTÁ NO AR</h3>
-                    <p class="text-agency-400 text-sm font-medium mb-8 uppercase tracking-widest">Lançamento Oficial</p>
-                    
-                    <div class="w-full bg-slate-800 rounded-xl flex-1 border border-slate-700 overflow-hidden relative group">
-                        <!-- Imagem dinâmica inserida pelo JS -->
-                        <img id="client-thumb-img" src="" alt="Preview do Site" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
-                        <div class="absolute inset-0 bg-gradient-to-t from-agency-900 via-transparent to-transparent pointer-events-none"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex-1 flex flex-col justify-center slide-up" style="animation-delay: 0.3s;">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-agency-500/10 border border-agency-500/20 text-agency-400 text-sm font-medium w-max mb-6">
-                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                    Projeto Entregue
-                </div>
-
-                <h2 class="text-4xl md:text-5xl font-serif font-bold text-white mb-6 leading-tight">
-                    Parabéns!<br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-agency-400 to-agency-500">Você recebeu seu site profissional.</span>
-                </h2>
-
-                <div class="space-y-6 text-slate-300 text-lg leading-relaxed mb-10">
-                    <p id="client-message-text" class="whitespace-pre-line"></p>
-                    <div class="p-5 rounded-xl glass-panel border-l-4 border-l-agency-500">
-                        <h4 class="text-white font-medium mb-2">Próximos passos:</h4>
-                        <ul class="list-disc list-inside text-sm text-slate-400 space-y-2">
-                            <li>Acesse o link abaixo para visualizar a versão final.</li>
-                            <li>Teste a navegação em seu computador e celular.</li>
-                            <li>Compartilhe sua nova conquista com seus clientes!</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a id="client-site-link" href="#" target="_blank" 
-                        class="px-8 py-4 rounded-xl bg-gradient-to-r from-agency-500 to-blue-600 hover:from-agency-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3">
-                        Acessar Meu Site
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                    </a>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- TELA DO ADMIN -->
-    <div id="admin-dashboard-view" class="hidden flex-1 flex-col fade-in relative z-10">
-        <header class="glass-panel border-b border-slate-800 py-4 px-6 flex justify-between items-center sticky top-0 z-20 bg-agency-900/90">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded bg-agency-500 flex items-center justify-center text-white font-bold">A</div>
-                <div class="font-serif text-xl font-bold text-white">Painel Administrador</div>
-            </div>
-            <div class="flex items-center gap-4">
-                <span class="text-sm text-slate-400 hidden sm:block">willdalves1@gmail.com</span>
-                <button class="btn-logout text-sm px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors border border-red-500/20">Sair</button>
-            </div>
-        </header>
-
-        <main class="flex-1 max-w-6xl w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- Coluna: Adicionar Novo Cliente -->
-            <div class="lg:col-span-1">
-                <div class="glass-panel p-6 rounded-2xl border border-slate-700 sticky top-24">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-agency-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        Nova Entrega
-                    </h3>
-                    <form id="admin-form" class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">E-mail do Cliente (Login)</label>
-                            <input type="email" id="admin-client-email" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-agency-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">Link do Site Final (URL)</label>
-                            <input type="url" id="admin-site-url" required placeholder="https://www.sitedosclientes.com.br" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-agency-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">Link da Imagem (Thumb Stories)</label>
-                            <input type="url" id="admin-thumb-url" required placeholder="https://link-da-imagem.jpg" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-agency-500">
-                            <p class="text-[10px] text-slate-500 mt-1">Hospede a imagem e cole o link direto aqui (proporção 9:16).</p>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">Mensagem de Entrega</label>
-                            <textarea id="admin-message" required rows="4" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-agency-500 resize-none">É com grande satisfação que entregamos a sua nova plataforma digital. Desenvolvemos este projeto de forma estratégica, unindo design de alto padrão e as melhores tecnologias.</textarea>
-                        </div>
-                        <button type="submit" id="btn-admin-save" class="w-full bg-agency-500 hover:bg-agency-400 text-white font-medium py-2 rounded-lg transition-colors text-sm">
-                            Salvar e Liberar Acesso
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Coluna: Lista de Entregas -->
-            <div class="lg:col-span-2">
-                <div class="glass-panel p-6 rounded-2xl border border-slate-700 h-full">
-                    <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-agency-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        Clientes e Entregas Registradas
-                    </h3>
-                    
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="border-b border-slate-700 text-xs uppercase text-slate-400">
-                                    <th class="pb-3 font-medium">E-mail do Cliente</th>
-                                    <th class="pb-3 font-medium">Site</th>
-                                    <th class="pb-3 font-medium text-right">Ação</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-deliveries-list" class="text-sm divide-y divide-slate-800/50">
-                                <!-- Preenchido via JS -->
-                                <tr><td colspan="3" class="py-4 text-center text-slate-500">Carregando dados...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-    </div>
-
-    <!-- Elementos de fundo dinâmicos (efeito visual premium) -->
-    <div class="fixed top-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-agency-500/10 blur-[120px] pointer-events-none -z-10"></div>
-    <div class="fixed bottom-[-20%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none -z-10"></div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // CONFIGURAÇÃO DO FIREBASE FORNECIDA (Com fallback de ambiente para garantir execução)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'portal-agencia';
+    <!-- ============ DASHBOARD PAGE ============ -->
+    <div id="dashboardPage" class="hidden min-h-screen">
         
-        // Usamos as credenciais que você forneceu, mas mesclamos com o ambiente se necessário
-        const userFirebaseConfig = {
+        <!-- Mobile Header -->
+        <header class="bg-white shadow-sm lg:hidden fixed top-0 left-0 right-0 z-40">
+            <div class="flex items-center justify-between p-4">
+                <button onclick="toggleSidebar()" class="text-gray-600 hover:text-indigo-500 transition-colors">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-crown text-indigo-500 text-xl"></i>
+                    <span class="font-bold text-gray-800">Member Kit</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <img id="userAvatarMobile" src="https://ui-avatars.com/api/?name=Cliente&background=6C63FF&color=fff&size=40" alt="Avatar" class="w-10 h-10 rounded-full">
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar Overlay Mobile -->
+        <div id="sidebarOverlay" class="hidden fixed inset-0 bg-black/50 z-40 lg:hidden" onclick="toggleSidebar()"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed left-0 top-0 h-full w-72 bg-white shadow-2xl z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+            
+            <div class="p-6 border-b border-gray-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-crown text-2xl text-white"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Member Kit</h2>
+                        <p id="sidebarUserType" class="text-xs text-gray-500">Painel do Cliente</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Cliente (não admin) -->
+            <nav id="clientMenu" class="flex-1 py-6 px-4 space-y-2 overflow-y-auto">
+                <a href="#" onclick="showSection('home')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 group active bg-indigo-50 text-indigo-600">
+                    <i class="fas fa-home w-5 text-center"></i>
+                    <span class="font-medium">Início</span>
+                </a>
+                <a href="#" onclick="showSection('website')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 group">
+                    <i class="fas fa-globe w-5 text-center"></i>
+                    <span class="font-medium">Meu Site</span>
+                </a>
+                <a href="#" onclick="showSection('messages')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 group">
+                    <i class="fas fa-envelope w-5 text-center"></i>
+                    <span class="font-medium">Mensagens</span>
+                </a>
+                <a href="#" onclick="showSection('support')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 group">
+                    <i class="fas fa-headset w-5 text-center"></i>
+                    <span class="font-medium">Suporte</span>
+                </a>
+            </nav>
+
+            <!-- Menu Admin -->
+            <nav id="adminMenu" class="hidden flex-1 py-6 px-4 space-y-2 overflow-y-auto">
+                <a href="#" onclick="showAdminSection('dashboard')" class="admin-nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 group active bg-indigo-50 text-indigo-600">
+                    <i class="fas fa-tachometer-alt w-5 text-center"></i>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+                <a href="#" onclick="showAdminSection('clients')" class="admin-nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 group">
+                    <i class="fas fa-users w-5 text-center"></i>
+                    <span class="font-medium">Clientes</span>
+                </a>
+                <a href="#" onclick="showAdminSection('addClient')" class="admin-nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 group">
+                    <i class="fas fa-user-plus w-5 text-center"></i>
+                    <span class="font-medium">Adicionar Cliente</span>
+                </a>
+                <a href="#" onclick="showAdminSection('manageSites')" class="admin-nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 group">
+                    <i class="fas fa-globe w-5 text-center"></i>
+                    <span class="font-medium">Gerenciar Sites</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-gray-100">
+                <div class="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-xl">
+                    <img id="userAvatarSidebar" src="https://ui-avatars.com/api/?name=Cliente&background=6C63FF&color=fff&size=40" alt="Avatar" class="w-10 h-10 rounded-full">
+                    <div class="flex-1 min-w-0">
+                        <p id="userNameSidebar" class="text-sm font-semibold text-gray-800 truncate">Cliente</p>
+                        <p id="userEmailSidebar" class="text-xs text-gray-500 truncate">email@exemplo.com</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="w-full py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-red-500/25 transform hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair do Painel</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="lg:ml-72 pt-16 lg:pt-0 min-h-screen">
+            
+            <header class="hidden lg:flex items-center justify-between bg-white shadow-sm px-8 py-4">
+                <div>
+                    <h3 id="headerTitle" class="text-2xl font-bold text-gray-800">Painel do Cliente</h3>
+                    <p class="text-sm text-gray-500">Bem-vindo de volta!</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <p id="userNameDesktop" class="text-sm font-semibold text-gray-800">Cliente</p>
+                        <p id="userEmailDesktop" class="text-xs text-gray-500">email@exemplo.com</p>
+                    </div>
+                    <img id="userAvatarDesktop" src="https://ui-avatars.com/api/?name=Cliente&background=6C63FF&color=fff&size=40" alt="Avatar" class="w-12 h-12 rounded-full ring-2 ring-indigo-500 ring-offset-2">
+                </div>
+            </header>
+
+            <div class="p-4 lg:p-8">
+                
+                <!-- ============ CLIENT SECTIONS ============ -->
+                <section id="homeSection" class="section-content space-y-6">
+                    <div class="bg-white rounded-3xl shadow-xl p-6 lg:p-10 text-center animate-fade-in">
+                        <div class="mb-8">
+                            <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full shadow-xl mb-4 animate-bounce-slow">
+                                <i class="fas fa-party-horn text-5xl text-white"></i>
+                            </div>
+                            <h1 class="text-3xl lg:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                                🎉 Parabéns! 🎉
+                            </h1>
+                        </div>
+
+                        <div class="max-w-xs mx-auto mb-8">
+                            <div class="relative rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-300 cursor-pointer group">
+                                <img id="thumbImage" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=700&fit=crop" alt="Preview do Site" class="w-full aspect-[9/16] object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                    <i class="fas fa-play-circle text-6xl text-white"></i>
+                                </div>
+                                <div class="absolute top-3 right-3 bg-indigo-500 text-white text-xs px-3 py-1 rounded-full">
+                                    Stories
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h2 id="clientName" class="text-xl lg:text-2xl font-bold text-gray-800 mb-4">
+                                Seu Site Profissional está Pronto!
+                            </h2>
+                            <p id="motivationalMessage" class="text-gray-600 text-sm lg:text-base leading-relaxed italic max-w-2xl mx-auto">
+                                "Cada grande jornada começa com um único passo. Hoje, você deu um passo gigante para o sucesso digital!"
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                            <a href="#" id="websiteLink" target="_blank" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-xl hover:shadow-xl hover:shadow-indigo-500/25 transform hover:-translate-y-0.5 transition-all duration-300">
+                                <i class="fas fa-external-link-alt"></i>
+                                Visitar Meu Site
+                            </a>
+                            <button onclick="shareWebsite()" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-indigo-600 font-bold rounded-xl border-2 border-indigo-500 hover:bg-indigo-50 transform hover:-translate-y-0.5 transition-all duration-300">
+                                <i class="fas fa-share-alt"></i>
+                                Compartilhar
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8 pt-8 border-t border-gray-100">
+                            <div class="p-4 hover:bg-gray-50 rounded-xl transition-colors">
+                                <i class="fas fa-mobile-alt text-3xl text-indigo-500 mb-3"></i>
+                                <h4 class="font-semibold text-gray-800 text-sm">Responsivo</h4>
+                                <p class="text-xs text-gray-500 mt-1">Adaptado para todos os dispositivos</p>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 rounded-xl transition-colors">
+                                <i class="fas fa-rocket text-3xl text-purple-500 mb-3"></i>
+                                <h4 class="font-semibold text-gray-800 text-sm">Otimizado</h4>
+                                <p class="text-xs text-gray-500 mt-1">Alta performance</p>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 rounded-xl transition-colors">
+                                <i class="fas fa-search text-3xl text-pink-500 mb-3"></i>
+                                <h4 class="font-semibold text-gray-800 text-sm">SEO Premium</h4>
+                                <p class="text-xs text-gray-500 mt-1">Otimizado para Google</p>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 rounded-xl transition-colors">
+                                <i class="fas fa-shield-alt text-3xl text-green-500 mb-3"></i>
+                                <h4 class="font-semibold text-gray-800 text-sm">Seguro</h4>
+                                <p class="text-xs text-gray-500 mt-1">SSL incluso</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-6 text-white shadow-xl">
+                        <div class="flex items-start gap-4">
+                            <i class="fas fa-lightbulb text-3xl text-yellow-300 animate-pulse-slow"></i>
+                            <div>
+                                <h4 class="font-bold mb-2">Dica do Dia</h4>
+                                <p id="dailyTip" class="text-white/90 text-sm">Mantenha seu site sempre atualizado para melhores resultados!</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="websiteSection" class="section-content hidden">
+                    <div class="bg-white rounded-3xl shadow-xl p-6 lg:p-10">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                            <i class="fas fa-globe text-indigo-500"></i>
+                            Informações do Seu Site
+                        </h2>
+                        <div id="websiteDetails" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                    </div>
+                </section>
+
+                <section id="messagesSection" class="section-content hidden">
+                    <div class="bg-white rounded-3xl shadow-xl p-6 lg:p-10">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                            <i class="fas fa-comments text-indigo-500"></i>
+                            Mensagens da Equipe
+                        </h2>
+                        <div id="messagesList" class="space-y-4"></div>
+                    </div>
+                </section>
+
+                <section id="supportSection" class="section-content hidden">
+                    <div class="bg-white rounded-3xl shadow-xl p-6 lg:p-10">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                            <i class="fas fa-headset text-indigo-500"></i>
+                            Central de Suporte
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <a href="https://wa.me/SEUNUMERO" target="_blank" class="block p-8 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl hover:shadow-lg transition-all duration-300 group">
+                                <i class="fab fa-whatsapp text-5xl text-green-500 mb-4 block group-hover:scale-110 transition-transform"></i>
+                                <h3 class="font-bold text-gray-800 mb-2">WhatsApp</h3>
+                                <p class="text-sm text-gray-600">Atendimento rápido e direto</p>
+                            </a>
+                            <a href="mailto:willdalves1@gmail.com" class="block p-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl hover:shadow-lg transition-all duration-300 group">
+                                <i class="fas fa-envelope text-5xl text-blue-500 mb-4 block group-hover:scale-110 transition-transform"></i>
+                                <h3 class="font-bold text-gray-800 mb-2">E-mail</h3>
+                                <p class="text-sm text-gray-600">willdalves1@gmail.com</p>
+                            </a>
+                            <a href="#" class="block p-8 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl hover:shadow-lg transition-all duration-300 group">
+                                <i class="fas fa-ticket-alt text-5xl text-purple-500 mb-4 block group-hover:scale-110 transition-transform"></i>
+                                <h3 class="font-bold text-gray-800 mb-2">Abrir Ticket</h3>
+                                <p class="text-sm text-gray-600">Suporte técnico especializado</p>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============ ADMIN SECTIONS ============ -->
+                
+                <!-- Admin Dashboard -->
+                <section id="adminDashboardSection" class="admin-section hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-2xl p-6 shadow-lg">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-users text-2xl text-indigo-600"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800" id="totalClients">0</h3>
+                            <p class="text-sm text-gray-500">Total de Clientes</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 shadow-lg">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-globe text-2xl text-green-600"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800" id="totalSites">0</h3>
+                            <p class="text-sm text-gray-500">Sites Entregues</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 shadow-lg">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-clock text-2xl text-yellow-600"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800" id="pendingSites">0</h3>
+                            <p class="text-sm text-gray-500">Sites Pendentes</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 shadow-lg">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-star text-2xl text-purple-600"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800" id="activeClients">0</h3>
+                            <p class="text-sm text-gray-500">Clientes Ativos</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl shadow-xl p-6 lg:p-10">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Últimos Clientes</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-left text-sm text-gray-500 border-b">
+                                        <th class="pb-3">Cliente</th>
+                                        <th class="pb-3">Email</th>
+                                        <th class="pb-3">Site</th>
+                                        <th class="pb-3">Status</th>
+                                        <th class="pb-3">Data</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentClientsTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Admin Clients List -->
+                <section id="adminClientsSection" class="admin-section hidden">
+                    <div class="bg-white rounded-3xl shadow-xl p-6 lg:p-10">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Todos os Clientes</h2>
+                            <button onclick="showAdminSection('addClient')" class="px-6 py-3 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600 transition-colors flex items-center gap-2">
+                                <i class="fas fa-plus"></i>
+                                Novo Cliente
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-left text-sm text-gray-500 border-b">
+                                        <th class="pb-3">Cliente</th>
+                                        <th class="pb-3">Email</th>
+                                        <th class="pb-3">Domínio</th>
+                                        <th class="pb-3">Status</th>
+                                        <th class="pb-3">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="allClientsTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Admin Add Client -->
+                <section id="adminAddClientSection" class="admin-section hidden">
+                    <div class="bg-white rounded-3xl shadow-xl p-6 lg:p-10">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Adicionar Novo Cliente</h2>
+                        
+                        <form id="addClientForm" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Nome do Cliente</label>
+                                    <input type="text" id="newClientName" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Email do Cliente</label>
+                                    <input type="email" id="newClientEmail" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Senha Temporária</label>
+                                    <input type="text" id="newClientPassword" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Domínio do Site</label>
+                                    <input type="text" id="newClientDomain" placeholder="www.cliente.com.br" class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">URL do Site</label>
+                                    <input type="url" id="newClientUrl" placeholder="https://www.cliente.com.br" class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">URL da Thumbnail</label>
+                                    <input type="url" id="newClientThumb" placeholder="https://imagem.com/thumb.jpg" class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 outline-none">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Mensagem Personalizada</label>
+                                <textarea id="newClientMessage" rows="3" class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 outline-none"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2">
+                                <i class="fas fa-user-plus"></i>
+                                Criar Cliente e Entregar Site
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Admin Manage Sites -->
+                <section id="adminManageSitesSection" class="admin-section hidden">
+                    <div class="bg-white rounded-3xl shadow-xl p-6 lg:p-10">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Gerenciar Sites dos Clientes</h2>
+                        <div id="manageSitesList" class="space-y-4"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para editar site -->
+    <div id="editSiteModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 lg:p-8 w-full max-w-lg animate-slide-up">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">Editar Site do Cliente</h3>
+            <form id="editSiteForm" class="space-y-4">
+                <input type="hidden" id="editClientId">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Domínio</label>
+                    <input type="text" id="editDomain" class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">URL do Site</label>
+                    <input type="url" id="editUrl" class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">URL da Thumbnail</label>
+                    <input type="url" id="editThumb" class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Mensagem Personalizada</label>
+                    <textarea id="editMessage" rows="3" class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 outline-none"></textarea>
+                </div>
+                <div class="flex gap-3">
+                    <button type="submit" class="flex-1 py-3 bg-indigo-500 text-white font-bold rounded-xl hover:bg-indigo-600 transition-colors">
+                        <i class="fas fa-save mr-2"></i>Salvar
+                    </button>
+                    <button type="button" onclick="closeEditModal()" class="flex-1 py-3 bg-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-300 transition-colors">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+    <script>
+        // ============ FIREBASE CONFIGURATION ============
+        const firebaseConfig = {
             apiKey: "AIzaSyBz5sHPyHIJhrAxi4beaup297Es8XIpNVs",
             authDomain: "webapp-181df.firebaseapp.com",
             projectId: "webapp-181df",
@@ -300,261 +573,562 @@
             appId: "1:148368554881:web:d4fd10ed7e3abfc6d98680",
             measurementId: "G-4Y8P9JQYNY"
         };
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : userFirebaseConfig;
 
-        // Inicializa Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
 
-        // Constante Admin
+        // ============ GLOBAL VARIABLES ============
         const ADMIN_EMAIL = 'willdalves1@gmail.com';
+        let currentUser = null;
+        let userData = null;
+        let isAdmin = false;
 
-        // Variáveis de Estado UI
-        const views = {
-            login: document.getElementById('login-view'),
-            clientDashboard: document.getElementById('client-dashboard-view'),
-            adminDashboard: document.getElementById('admin-dashboard-view')
-        };
-        
-        let isLoginMode = true; // true = Login, false = Register
+        const motivationalPhrases = [
+            "O sucesso é a soma de pequenos esforços repetidos dia após dia. 🌟",
+            "Seu site é a vitrine digital do seu negócio. Faça brilhar! ✨",
+            "Grandes conquistas começam com um site profissional. Parabéns! 🚀",
+            "O digital é o presente e o futuro. Você está no caminho certo! 💪",
+            "Sua presença online começa agora. Bem-vindo ao sucesso! 🎯",
+            "Inove, crie, conquiste. Seu site é apenas o começo! 🌈",
+            "Transforme visitantes em clientes com seu novo site profissional! 💼"
+        ];
 
-        // Utils UI
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            const colors = {
-                success: 'bg-green-500/20 border-green-500/50 text-green-300',
-                error: 'bg-red-500/20 border-red-500/50 text-red-300',
-                info: 'bg-blue-500/20 border-blue-500/50 text-blue-300'
-            };
-            toast.className = `px-4 py-3 rounded-lg border backdrop-blur-md shadow-lg transform transition-all duration-300 translate-x-full pointer-events-auto ${colors[type]}`;
-            toast.innerHTML = `<p class="text-sm font-medium">${message}</p>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.remove('translate-x-full'), 10);
-            setTimeout(() => {
-                toast.classList.add('translate-x-full');
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
-        }
+        const dailyTips = [
+            "Mantenha seu conteúdo sempre atualizado para melhor engajamento.",
+            "Responda rapidamente aos contatos recebidos pelo site.",
+            "Compartilhe seu site nas redes sociais para aumentar o alcance.",
+            "Adicione depoimentos de clientes para gerar confiança.",
+            "Utilize imagens de alta qualidade em seu conteúdo."
+        ];
 
-        function switchView(viewName) {
-            Object.values(views).forEach(v => {
-                v.classList.add('hidden');
-                v.classList.remove('flex');
-            });
-            views[viewName].classList.remove('hidden');
-            if(viewName.includes('dashboard')) {
-                views[viewName].classList.add('flex');
-            }
-        }
-
-        function setBtnLoading(btn, isLoading) {
-            if (isLoading) {
-                btn.disabled = true;
-                btn.dataset.originalText = btn.innerHTML;
-                btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
-                btn.classList.add('opacity-80', 'cursor-not-allowed');
+        // ============ AUTHENTICATION ============
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                isAdmin = user.email === ADMIN_EMAIL;
+                
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('dashboardPage').classList.remove('hidden');
+                
+                updateUIForUserType();
+                
+                if (isAdmin) {
+                    loadAdminData();
+                } else {
+                    loadUserData(user.uid);
+                }
+                
+                updateUserInfo(user);
             } else {
-                btn.disabled = false;
-                if(btn.dataset.originalText) btn.innerHTML = btn.dataset.originalText;
-                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                currentUser = null;
+                isAdmin = false;
+                document.getElementById('loginPage').classList.remove('hidden');
+                document.getElementById('dashboardPage').classList.add('hidden');
             }
-        }
-
-        // Alternar entre Login e Criar Conta
-        document.getElementById('toggle-auth-mode').addEventListener('click', () => {
-            isLoginMode = !isLoginMode;
-            document.getElementById('auth-subtitle').textContent = isLoginMode ? 'Acesse sua área restrita para visualizar seu projeto.' : 'Crie sua conta de acesso ao portal.';
-            document.getElementById('btn-login-text').textContent = isLoginMode ? 'Acessar Projeto' : 'Criar Conta';
-            document.getElementById('toggle-auth-mode').textContent = isLoginMode ? 'Primeiro acesso? Crie sua conta' : 'Já tem conta? Faça login';
         });
 
-        // Submit Form de Auth
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const btn = document.getElementById('btn-login');
+        function updateUIForUserType() {
+            const clientMenu = document.getElementById('clientMenu');
+            const adminMenu = document.getElementById('adminMenu');
+            const sidebarUserType = document.getElementById('sidebarUserType');
+            
+            if (isAdmin) {
+                clientMenu.classList.add('hidden');
+                adminMenu.classList.remove('hidden');
+                sidebarUserType.textContent = 'Painel Administrativo';
+                document.getElementById('headerTitle').textContent = 'Painel Admin';
+                showAdminSection('dashboard');
+            } else {
+                clientMenu.classList.remove('hidden');
+                adminMenu.classList.add('hidden');
+                sidebarUserType.textContent = 'Painel do Cliente';
+                document.getElementById('headerTitle').textContent = 'Painel do Cliente';
+                showSection('home');
+            }
+        }
 
-            if(!email || password.length < 6) {
-                showToast('Preencha corretamente. A senha deve ter no mínimo 6 caracteres.', 'error');
+        // Login Form
+        document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginButton = document.getElementById('loginButton');
+            const spinner = document.getElementById('spinner');
+            
+            loginButton.disabled = true;
+            spinner.classList.remove('hidden');
+            loginButton.querySelector('span').textContent = 'Entrando...';
+            
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                showMessage('Login realizado com sucesso! ✅', 'success');
+            } catch (error) {
+                let errorMessage = 'Erro ao fazer login.';
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'Usuário não encontrado.';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = 'Senha incorreta.';
+                        break;
+                    case 'auth/invalid-credential':
+                        errorMessage = 'Credenciais inválidas.';
+                        break;
+                    default:
+                        errorMessage = error.message;
+                }
+                showMessage(errorMessage, 'error');
+            } finally {
+                loginButton.disabled = false;
+                spinner.classList.add('hidden');
+                loginButton.querySelector('span').textContent = 'Acessar Painel';
+            }
+        });
+
+        // ============ CLIENT FUNCTIONS ============
+        function loadUserData(userId) {
+            const userRef = database.ref('users/' + userId);
+            userRef.on('value', (snapshot) => {
+                userData = snapshot.val();
+                if (userData) {
+                    updateClientDashboard(userData);
+                }
+            });
+        }
+
+        function updateClientDashboard(data) {
+            if (data.clientName) {
+                document.getElementById('clientName').textContent = `Parabéns, ${data.clientName}! Seu Site está Pronto!`;
+            }
+            if (data.websiteUrl) {
+                document.getElementById('websiteLink').href = data.websiteUrl;
+            }
+            if (data.websiteThumb) {
+                document.getElementById('thumbImage').src = data.websiteThumb;
+            }
+            
+            const message = data.personalMessage || motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)];
+            document.getElementById('motivationalMessage').textContent = `"${message}"`;
+            
+            const tip = dailyTips[Math.floor(Math.random() * dailyTips.length)];
+            document.getElementById('dailyTip').textContent = tip;
+            
+            // Website Details
+            const detailsDiv = document.getElementById('websiteDetails');
+            if (detailsDiv) {
+                detailsDiv.innerHTML = `
+                    <div class="bg-gradient-to-br from-gray-50 to-white p-6 rounded-2xl border border-gray-100">
+                        <p class="text-sm text-gray-500 mb-1">Domínio</p>
+                        <p class="text-lg font-bold text-gray-800">${data.websiteDomain || 'Em breve'}</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-gray-50 to-white p-6 rounded-2xl border border-gray-100">
+                        <p class="text-sm text-gray-500 mb-1">Data de Entrega</p>
+                        <p class="text-lg font-bold text-gray-800">${data.deliveryDate || new Date().toLocaleDateString('pt-BR')}</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-gray-50 to-white p-6 rounded-2xl border border-gray-100">
+                        <p class="text-sm text-gray-500 mb-1">Status</p>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 ${data.websiteUrl && data.websiteUrl !== '#' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'} rounded-full font-bold">
+                            <span class="w-2 h-2 ${data.websiteUrl && data.websiteUrl !== '#' ? 'bg-green-500' : 'bg-yellow-500'} rounded-full animate-pulse"></span>
+                            ${data.websiteUrl && data.websiteUrl !== '#' ? 'Ativo' : 'Em Desenvolvimento'}
+                        </span>
+                    </div>
+                    <div class="bg-gradient-to-br from-gray-50 to-white p-6 rounded-2xl border border-gray-100">
+                        <p class="text-sm text-gray-500 mb-1">Tipo de Site</p>
+                        <p class="text-lg font-bold text-gray-800">${data.websiteType || 'Site Profissional'}</p>
+                    </div>
+                `;
+            }
+            
+            // Messages
+            const messagesList = document.getElementById('messagesList');
+            if (messagesList && data.messages) {
+                messagesList.innerHTML = data.messages.slice().reverse().map(msg => `
+                    <div class="bg-gradient-to-r from-gray-50 to-white p-6 rounded-2xl border border-gray-100">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user-circle text-indigo-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-800">Equipe Member Kit</p>
+                                <p class="text-xs text-gray-500">${msg.date || ''}</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">${msg.text}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // ============ ADMIN FUNCTIONS ============
+        function loadAdminData() {
+            // Load admin dashboard stats
+            database.ref('users').on('value', (snapshot) => {
+                const users = snapshot.val() || {};
+                const clientsList = Object.entries(users).filter(([uid, data]) => uid !== currentUser.uid);
+                
+                // Update stats
+                document.getElementById('totalClients').textContent = clientsList.length;
+                
+                let totalSites = 0;
+                let pendingSites = 0;
+                let activeClients = 0;
+                
+                clientsList.forEach(([uid, data]) => {
+                    if (data.websiteUrl && data.websiteUrl !== '#') {
+                        totalSites++;
+                        activeClients++;
+                    } else {
+                        pendingSites++;
+                    }
+                });
+                
+                document.getElementById('totalSites').textContent = totalSites;
+                document.getElementById('pendingSites').textContent = pendingSites;
+                document.getElementById('activeClients').textContent = activeClients;
+                
+                // Recent clients table
+                const recentClients = clientsList.slice(-5).reverse();
+                const recentTable = document.getElementById('recentClientsTable');
+                if (recentTable) {
+                    recentTable.innerHTML = recentClients.map(([uid, data]) => `
+                        <tr class="border-b border-gray-100">
+                            <td class="py-3 font-medium">${data.clientName || 'N/A'}</td>
+                            <td class="py-3 text-gray-600">${data.email || 'N/A'}</td>
+                            <td class="py-3 text-gray-600">${data.websiteDomain || 'Em breve'}</td>
+                            <td class="py-3">
+                                <span class="px-3 py-1 rounded-full text-xs font-medium ${data.websiteUrl && data.websiteUrl !== '#' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
+                                    ${data.websiteUrl && data.websiteUrl !== '#' ? 'Entregue' : 'Pendente'}
+                                </span>
+                            </td>
+                            <td class="py-3 text-gray-500 text-sm">${data.deliveryDate || 'N/A'}</td>
+                        </tr>
+                    `).join('');
+                }
+                
+                // All clients table
+                const allTable = document.getElementById('allClientsTable');
+                if (allTable) {
+                    allTable.innerHTML = clientsList.reverse().map(([uid, data]) => `
+                        <tr class="border-b border-gray-100">
+                            <td class="py-3 font-medium">${data.clientName || 'N/A'}</td>
+                            <td class="py-3 text-gray-600">${data.email || 'N/A'}</td>
+                            <td class="py-3 text-gray-600">${data.websiteDomain || 'Em breve'}</td>
+                            <td class="py-3">
+                                <span class="px-3 py-1 rounded-full text-xs font-medium ${data.websiteUrl && data.websiteUrl !== '#' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
+                                    ${data.websiteUrl && data.websiteUrl !== '#' ? 'Entregue' : 'Pendente'}
+                                </span>
+                            </td>
+                            <td class="py-3">
+                                <button onclick="editClientSite('${uid}')" class="text-indigo-500 hover:text-indigo-700 mr-3">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteClient('${uid}')" class="text-red-500 hover:text-red-700">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+                
+                // Manage sites list
+                const manageSitesDiv = document.getElementById('manageSitesList');
+                if (manageSitesDiv) {
+                    manageSitesDiv.innerHTML = clientsList.map(([uid, data]) => `
+                        <div class="bg-gray-50 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <h4 class="font-bold text-gray-800">${data.clientName || 'N/A'}</h4>
+                                <p class="text-sm text-gray-500">${data.email || 'N/A'}</p>
+                                <p class="text-sm text-gray-500">Domínio: ${data.websiteDomain || 'Não definido'}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="editClientSite('${uid}')" class="px-4 py-2 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600 transition-colors text-sm">
+                                    <i class="fas fa-edit mr-1"></i>Editar
+                                </button>
+                                <button onclick="sendMessage('${uid}')" class="px-4 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors text-sm">
+                                    <i class="fas fa-paper-plane mr-1"></i>Mensagem
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            });
+        }
+
+        // Add new client
+        document.getElementById('addClientForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('newClientName').value;
+            const email = document.getElementById('newClientEmail').value;
+            const password = document.getElementById('newClientPassword').value;
+            const domain = document.getElementById('newClientDomain').value;
+            const url = document.getElementById('newClientUrl').value;
+            const thumb = document.getElementById('newClientThumb').value;
+            const message = document.getElementById('newClientMessage').value;
+            
+            try {
+                // Criar usuário no Authentication
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const userId = userCredential.user.uid;
+                
+                // Salvar dados no Realtime Database
+                const userData = {
+                    clientName: name,
+                    email: email,
+                    websiteUrl: url || '#',
+                    websiteThumb: thumb || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=700&fit=crop',
+                    websiteDomain: domain || 'Em breve',
+                    deliveryDate: new Date().toLocaleDateString('pt-BR'),
+                    websiteType: 'Site Profissional',
+                    personalMessage: message || 'Parabéns! Seu site profissional está pronto!',
+                    messages: [
+                        {
+                            date: new Date().toLocaleDateString('pt-BR'),
+                            text: message || '🎉 Bem-vindo! Seu site profissional foi entregue com sucesso!'
+                        }
+                    ],
+                    createdAt: new Date().toISOString()
+                };
+                
+                await database.ref('users/' + userId).set(userData);
+                
+                // Fazer logout do novo usuário e voltar para o admin
+                await auth.signOut();
+                await auth.signInWithEmailAndPassword(ADMIN_EMAIL, prompt('Digite sua senha de admin para continuar:'));
+                
+                showToast('Cliente criado com sucesso! ✅');
+                document.getElementById('addClientForm').reset();
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                showToast('Erro ao criar cliente: ' + error.message);
+            }
+        });
+
+        // Edit client site
+        function editClientSite(userId) {
+            database.ref('users/' + userId).once('value').then((snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('editClientId').value = userId;
+                    document.getElementById('editDomain').value = data.websiteDomain || '';
+                    document.getElementById('editUrl').value = data.websiteUrl || '';
+                    document.getElementById('editThumb').value = data.websiteThumb || '';
+                    document.getElementById('editMessage').value = data.personalMessage || '';
+                    document.getElementById('editSiteModal').classList.remove('hidden');
+                }
+            });
+        }
+
+        document.getElementById('editSiteForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const userId = document.getElementById('editClientId').value;
+            const updates = {
+                websiteDomain: document.getElementById('editDomain').value,
+                websiteUrl: document.getElementById('editUrl').value,
+                websiteThumb: document.getElementById('editThumb').value,
+                personalMessage: document.getElementById('editMessage').value,
+                deliveryDate: new Date().toLocaleDateString('pt-BR')
+            };
+            
+            try {
+                await database.ref('users/' + userId).update(updates);
+                
+                // Adicionar mensagem de atualização
+                const newMessage = {
+                    date: new Date().toLocaleDateString('pt-BR'),
+                    text: '🚀 Seu site foi atualizado! Confira as novidades.'
+                };
+                
+                const messagesRef = database.ref('users/' + userId + '/messages');
+                const snapshot = await messagesRef.once('value');
+                const messages = snapshot.val() || [];
+                messages.push(newMessage);
+                await messagesRef.set(messages);
+                
+                closeEditModal();
+                showToast('Site atualizado com sucesso! ✅');
+            } catch (error) {
+                showToast('Erro ao atualizar: ' + error.message);
+            }
+        });
+
+        function closeEditModal() {
+            document.getElementById('editSiteModal').classList.add('hidden');
+        }
+
+        function deleteClient(userId) {
+            if (confirm('Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita.')) {
+                database.ref('users/' + userId).remove()
+                    .then(() => {
+                        showToast('Cliente excluído com sucesso!');
+                    })
+                    .catch((error) => {
+                        showToast('Erro ao excluir: ' + error.message);
+                    });
+            }
+        }
+
+        function sendMessage(userId) {
+            const message = prompt('Digite a mensagem para o cliente:');
+            if (message) {
+                const messagesRef = database.ref('users/' + userId + '/messages');
+                messagesRef.once('value').then((snapshot) => {
+                    const messages = snapshot.val() || [];
+                    messages.push({
+                        date: new Date().toLocaleDateString('pt-BR'),
+                        text: message
+                    });
+                    return messagesRef.set(messages);
+                }).then(() => {
+                    showToast('Mensagem enviada com sucesso! ✉️');
+                });
+            }
+        }
+
+        // ============ UI FUNCTIONS ============
+        function showSection(sectionName) {
+            document.querySelectorAll('.section-content').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
+            
+            const sectionMap = {
+                'home': 'homeSection',
+                'website': 'websiteSection',
+                'messages': 'messagesSection',
+                'support': 'supportSection'
+            };
+            
+            const sectionId = sectionMap[sectionName];
+            if (sectionId) {
+                document.getElementById(sectionId).classList.remove('hidden');
+                document.getElementById('headerTitle').textContent = 
+                    sectionName === 'home' ? 'Painel do Cliente' :
+                    sectionName === 'website' ? 'Meu Site' :
+                    sectionName === 'messages' ? 'Mensagens' : 'Suporte';
+            }
+            
+            updateNavLinks('nav-link', sectionName);
+        }
+
+        function showAdminSection(sectionName) {
+            document.querySelectorAll('.section-content').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
+            
+            const sectionMap = {
+                'dashboard': 'adminDashboardSection',
+                'clients': 'adminClientsSection',
+                'addClient': 'adminAddClientSection',
+                'manageSites': 'adminManageSitesSection'
+            };
+            
+            const sectionId = sectionMap[sectionName];
+            if (sectionId) {
+                document.getElementById(sectionId).classList.remove('hidden');
+                document.getElementById('headerTitle').textContent = 
+                    sectionName === 'dashboard' ? 'Dashboard Admin' :
+                    sectionName === 'clients' ? 'Clientes' :
+                    sectionName === 'addClient' ? 'Adicionar Cliente' : 'Gerenciar Sites';
+            }
+            
+            updateNavLinks('admin-nav-link', sectionName);
+        }
+
+        function updateNavLinks(className, activeSection) {
+            document.querySelectorAll(`.${className}`).forEach(link => {
+                link.classList.remove('bg-indigo-50', 'text-indigo-600');
+                link.classList.add('text-gray-600');
+            });
+        }
+
+        function updateUserInfo(user) {
+            const name = user.displayName || userData?.clientName || (isAdmin ? 'Administrador' : 'Cliente');
+            const email = user.email;
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6C63FF&color=fff&size=200`;
+            
+            document.getElementById('userAvatarMobile').src = avatarUrl;
+            document.getElementById('userAvatarSidebar').src = avatarUrl;
+            document.getElementById('userAvatarDesktop').src = avatarUrl;
+            document.getElementById('userNameSidebar').textContent = name;
+            document.getElementById('userEmailSidebar').textContent = email;
+            document.getElementById('userNameDesktop').textContent = name;
+            document.getElementById('userEmailDesktop').textContent = email;
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.toggle('hidden');
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon = document.getElementById('toggleIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function showForgotPassword() {
+            const email = document.getElementById('email').value;
+            if (!email) {
+                showMessage('Digite seu e-mail primeiro.', 'error');
                 return;
             }
-
-            setBtnLoading(btn, true);
-
-            try {
-                if (isLoginMode) {
-                    await signInWithEmailAndPassword(auth, email, password);
-                    showToast('Login realizado com sucesso!', 'success');
-                } else {
-                    await createUserWithEmailAndPassword(auth, email, password);
-                    showToast('Conta criada com sucesso!', 'success');
-                }
-                // O onAuthStateChanged vai assumir a partir daqui
-            } catch (error) {
-                console.error("Auth Error:", error);
-                let msg = 'Erro na autenticação.';
-                if(error.code === 'auth/wrong-password') msg = 'Senha incorreta.';
-                if(error.code === 'auth/user-not-found') msg = 'Usuário não encontrado. Crie uma conta primeiro.';
-                if(error.code === 'auth/email-already-in-use') msg = 'Este e-mail já está em uso.';
-                showToast(msg, 'error');
-                setBtnLoading(btn, false);
-            }
-        });
-
-        // Botões de Logout
-        document.querySelectorAll('.btn-logout').forEach(btn => {
-            btn.addEventListener('click', async () => {
-                await signOut(auth);
-                showToast('Sessão encerrada.', 'info');
-                document.getElementById('login-form').reset();
-                switchView('login');
-            });
-        });
-
-        // Função Central de Roteamento de Usuário
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const btn = document.getElementById('btn-login');
-                setBtnLoading(btn, false); // Limpa loader se estiver ativo
-                
-                if (user.email === ADMIN_EMAIL) {
-                    // É o ADMIN
-                    switchView('adminDashboard');
-                    initAdminData();
-                } else {
-                    // É um CLIENTE
-                    document.getElementById('client-user-display').textContent = user.email;
-                    switchView('clientDashboard');
-                    initClientData(user.email);
-                }
-            } else {
-                switchView('login');
-            }
-        });
-
-        // Referência Base para os Dados (Usando regra de path estrito)
-        // Guardamos as entregas numa coleção pública para que o cliente possa buscar a dele e o admin buscar todas
-        const deliveriesCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'deliveries');
-
-        // ==========================================
-        // LÓGICA DO CLIENTE
-        // ==========================================
-        function initClientData(clientEmail) {
-            const q = query(deliveriesCollectionRef);
-            
-            onSnapshot(q, (snapshot) => {
-                // Filtramos em memória por causa da Regra 2 (No Complex Queries)
-                const deliveries = [];
-                snapshot.forEach(doc => deliveries.push(doc.data()));
-                
-                // Encontrar a entrega deste cliente
-                const myDelivery = deliveries.find(d => d.clientEmail.toLowerCase() === clientEmail.toLowerCase());
-
-                if (myDelivery) {
-                    document.getElementById('client-no-project').classList.add('hidden');
-                    document.getElementById('client-has-project').classList.remove('hidden');
-                    document.getElementById('client-has-project').classList.add('flex');
-
-                    // Injetar dados do BD na UI
-                    document.getElementById('client-thumb-img').src = myDelivery.thumbUrl;
-                    document.getElementById('client-message-text').textContent = myDelivery.message;
-                    document.getElementById('client-site-link').href = myDelivery.siteUrl;
-                } else {
-                    // Cliente logou mas Admin não cadastrou nada para ele ainda
-                    document.getElementById('client-no-project').classList.remove('hidden');
-                    document.getElementById('client-no-project').classList.add('flex');
-                    document.getElementById('client-has-project').classList.add('hidden');
-                    document.getElementById('client-has-project').classList.remove('flex');
-                }
-            }, (error) => {
-                console.error("Erro ao buscar dados do cliente:", error);
-                showToast('Erro ao sincronizar dados.', 'error');
-            });
+            auth.sendPasswordResetEmail(email)
+                .then(() => showMessage('E-mail enviado! Verifique sua caixa de entrada. 📧', 'success'))
+                .catch(() => showMessage('Erro ao enviar e-mail.', 'error'));
         }
 
-
-        // ==========================================
-        // LÓGICA DO ADMIN
-        // ==========================================
-        function initAdminData() {
-            // Escuta todas as entregas para listar na tabela
-            onSnapshot(deliveriesCollectionRef, (snapshot) => {
-                const tbody = document.getElementById('admin-deliveries-list');
-                tbody.innerHTML = '';
-                
-                if(snapshot.empty) {
-                    tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-slate-500">Nenhuma entrega registrada.</td></tr>';
-                    return;
-                }
-
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    const docId = docSnap.id;
-                    
-                    const tr = document.createElement('tr');
-                    tr.className = "hover:bg-slate-800/50 transition-colors";
-                    tr.innerHTML = `
-                        <td class="py-3 pr-4 font-medium text-white">${data.clientEmail}</td>
-                        <td class="py-3 pr-4">
-                            <a href="${data.siteUrl}" target="_blank" class="text-agency-400 hover:text-agency-300 truncate max-w-[200px] inline-block">${data.siteUrl}</a>
-                        </td>
-                        <td class="py-3 text-right">
-                            <button onclick="deleteDelivery('${docId}')" class="text-xs px-2 py-1 bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded border border-red-500/20 transition-colors">Remover</button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            }, (error) => {
-                console.error("Erro ao buscar entregas admin:", error);
-            });
+        function logout() {
+            auth.signOut();
         }
 
-        // Salvar Nova Entrega (Admin)
-        document.getElementById('admin-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Segurança extra: verifica se é o admin
-            if(!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) return;
-
-            const btn = document.getElementById('btn-admin-save');
-            const data = {
-                clientEmail: document.getElementById('admin-client-email').value.trim(),
-                siteUrl: document.getElementById('admin-site-url').value.trim(),
-                thumbUrl: document.getElementById('admin-thumb-url').value.trim(),
-                message: document.getElementById('admin-message').value,
-                createdAt: Date.now()
-            };
-
-            setBtnLoading(btn, true);
-
-            try {
-                await addDoc(deliveriesCollectionRef, data);
-                showToast('Entrega registrada com sucesso!', 'success');
-                document.getElementById('admin-form').reset();
-            } catch (error) {
-                console.error("Erro ao salvar entrega:", error);
-                showToast('Erro ao salvar no banco de dados.', 'error');
-            } finally {
-                setBtnLoading(btn, false);
-            }
-        });
-
-        // Função global para o botão de deletar na tabela
-        window.deleteDelivery = async function(docId) {
-            if(!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) return;
-            // No alert()/confirm() rule -> using direct deletion for simplicity, but showing toast
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'deliveries', docId));
-                showToast('Registro apagado.', 'info');
-            } catch (error) {
-                console.error("Erro ao deletar:", error);
-                showToast('Erro ao tentar remover.', 'error');
+        function shareWebsite() {
+            if (userData?.websiteUrl && userData.websiteUrl !== '#') {
+                const text = `🎉 Confira meu site: ${userData.websiteUrl}`;
+                if (navigator.share) {
+                    navigator.share({ title: 'Meu Site', text, url: userData.websiteUrl });
+                } else {
+                    navigator.clipboard.writeText(text).then(() => showToast('Link copiado! 📋'));
+                }
             }
         }
 
+        function showMessage(message, type) {
+            const box = document.getElementById('messageBox');
+            box.textContent = message;
+            box.className = `mt-4 p-4 rounded-xl text-sm font-medium text-center ${
+                type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+            }`;
+            box.classList.remove('hidden');
+            setTimeout(() => box.classList.add('hidden'), 5000);
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-5 right-5 bg-gray-900 text-white px-6 py-3 rounded-xl shadow-2xl animate-slide-up z-50 text-sm';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Email validation
+        document.getElementById('email')?.addEventListener('input', function() {
+            const isValid = this.value.includes('@') && this.value.includes('.');
+            document.getElementById('emailValid')?.classList.toggle('hidden', !isValid);
+        });
+
+        console.log('🚀 Member Kit inicializado!');
+        console.log('👑 Admin:', ADMIN_EMAIL);
     </script>
 </body>
 </html>
