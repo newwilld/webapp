@@ -230,6 +230,11 @@
                             <input type="email" id="admin-client-email" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-agency-500">
                         </div>
                         <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Senha de Acesso (Nova Conta)</label>
+                            <input type="text" id="admin-client-password" required minlength="6" placeholder="Ex: site123" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-agency-500">
+                            <p class="text-[10px] text-slate-500 mt-1">Esta senha criará a conta no sistema automaticamente.</p>
+                        </div>
+                        <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">Link do Site Final (URL)</label>
                             <input type="url" id="admin-site-url" required placeholder="https://www.sitedosclientes.com.br" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-agency-500">
                         </div>
@@ -306,6 +311,10 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+
+        // Instância Secundária: Usada exclusivamente para cadastrar o cliente sem derrubar o seu login de Admin
+        const secondaryApp = initializeApp(firebaseConfig, "SecondaryApp");
+        const secondaryAuth = getAuth(secondaryApp);
 
         // Constante Admin
         const ADMIN_EMAIL = 'willdalves1@gmail.com';
@@ -522,8 +531,11 @@
             }
 
             const btn = document.getElementById('btn-admin-save');
+            const clientEmail = document.getElementById('admin-client-email').value.trim().toLowerCase();
+            const clientPassword = document.getElementById('admin-client-password').value;
+            
             const data = {
-                clientEmail: document.getElementById('admin-client-email').value.trim().toLowerCase(),
+                clientEmail: clientEmail,
                 siteUrl: document.getElementById('admin-site-url').value.trim(),
                 thumbUrl: document.getElementById('admin-thumb-url').value.trim(),
                 message: document.getElementById('admin-message').value,
@@ -533,13 +545,31 @@
             setBtnLoading(btn, true);
 
             try {
+                // 1. Tentar criar o usuário no Firebase Auth usando a instância secundária
+                try {
+                    await createUserWithEmailAndPassword(secondaryAuth, clientEmail, clientPassword);
+                    await signOut(secondaryAuth); // Desloga a conta criada do "aplicativo fantasma"
+                } catch (authError) {
+                    // Se o cliente já tiver uma conta cadastrada antes, o sistema apenas avisa e continua a entrega!
+                    if (authError.code === 'auth/email-already-in-use') {
+                        showToast('Nota: Esta conta de e-mail já existe. Adicionando entrega...', 'info');
+                    } else {
+                        // Se for outro erro (como senha menor que 6 caracteres), cancela e mostra o erro
+                        throw authError; 
+                    }
+                }
+
+                // 2. Salvar dados no Firestore Database
                 await addDoc(deliveriesCollectionRef, data);
-                showToast('Entrega registrada com sucesso!', 'success');
+                showToast('Conta criada e entrega registrada!', 'success');
                 document.getElementById('admin-form').reset();
             } catch (error) {
                 console.error("Erro ao salvar entrega:", error);
-                // Agora o erro exato será exibido na tela do app (ex: Permissão Negada)
-                showToast('Erro ao salvar: ' + (error.message || 'Verifique o console.'), 'error');
+                
+                let msg = error.message;
+                if (error.code === 'auth/weak-password') msg = 'A senha deve ter pelo menos 6 caracteres.';
+                
+                showToast('Erro ao salvar: ' + msg, 'error');
             } finally {
                 setBtnLoading(btn, false);
             }
