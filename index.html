@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Cliente - Entrega de Projeto</title>
+    
+    <!-- Carregando Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuração do Tailwind para design premium -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        agency: {
+                            900: '#0f172a', // Fundo escuro elegante
+                            800: '#1e293b', // Cards
+                            500: '#3b82f6', // Azul principal
+                            400: '#60a5fa', // Azul claro
+                            gold: '#fbbf24' // Detalhe dourado
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Fontes do Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .story-thumb {
+            aspect-ratio: 9/16;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .story-glow {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            box-shadow: inset 0 0 40px rgba(59, 130, 246, 0.2);
+            pointer-events: none;
+        }
+
+        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        .slide-up { animation: slideUp 0.8s ease-out forwards; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Oculta scrollbar mas permite scroll */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col relative">
+
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <div id="login-view" class="flex-1 flex items-center justify-center p-4 fade-in z-10">
+        <div class="glass-panel rounded-2xl w-full max-w-md p-8 shadow-2xl relative overflow-hidden">
+            <!-- Detalhe visual -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-agency-500 to-agency-400"></div>
+            
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-serif text-white mb-2">Portal do Cliente</h1>
+                <p class="text-slate-400 text-sm">Acesse sua área restrita para visualizar seu projeto.</p>
+            </div>
+
+            <form id="login-form" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1" for="email">E-mail corporativo</label>
+                    <input type="email" id="email" required placeholder="cliente@empresa.com" 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-agency-500 focus:ring-1 focus:ring-agency-500 transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1" for="password">Senha de acesso</label>
+                    <input type="password" id="password" required placeholder="••••••••" 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-agency-500 focus:ring-1 focus:ring-agency-500 transition-all">
+                </div>
+                
+                <button type="submit" id="btn-login" 
+                    class="w-full bg-agency-500 hover:bg-agency-400 text-white font-medium py-3 rounded-lg transition-colors shadow-[0_0_15px_rgba(59,130,246,0.4)] hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] flex justify-center items-center gap-2">
+                    <span>Acessar Projeto</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </button>
+            </form>
+            <div class="mt-6 text-center text-xs text-slate-500">
+                Desenvolvido por <span class="text-slate-300 font-medium">Sua Agência</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-view" class="hidden flex-1 flex-col fade-in relative z-10">
+        
+        <!-- Navbar -->
+        <header class="glass-panel border-b-0 border-slate-800 py-4 px-6 md:px-12 flex justify-between items-center sticky top-0 z-20">
+            <div class="font-serif text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
+                Portal do Cliente
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-sm text-slate-400 hidden sm:block">
+                    Bem-vindo, <span id="user-display" class="text-white font-medium">Cliente</span>
+                </div>
+                <button id="btn-logout" class="text-sm px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700">
+                    Sair
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-1 max-w-7xl w-full mx-auto p-6 md:p-12 flex flex-col lg:flex-row gap-12 items-center lg:items-stretch">
+            
+            <!-- Lado Esquerdo: Imagem formato Stories -->
+            <div class="w-full max-w-sm shrink-0 slide-up" style="animation-delay: 0.1s;">
+                <div class="story-thumb rounded-3xl border border-slate-700 flex flex-col items-center justify-center p-6 text-center">
+                    <div class="story-glow rounded-3xl"></div>
+                    
+                    <!-- Mockup ou Logo animado -->
+                    <div class="w-24 h-24 mb-6 rounded-full bg-gradient-to-tr from-agency-500 to-purple-500 p-1 animate-pulse">
+                        <div class="w-full h-full bg-agency-900 rounded-full flex items-center justify-center">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-2xl font-serif font-bold text-white mb-2 leading-tight">SEU NOVO SITE<br>ESTÁ NO AR</h3>
+                    <p class="text-agency-400 text-sm font-medium mb-8 uppercase tracking-widest">Lançamento Oficial</p>
+                    
+                    <!-- Simulação de imagem de site -->
+                    <div class="w-full bg-slate-800 rounded-xl flex-1 border border-slate-700 overflow-hidden relative group">
+                        <img src="https://placehold.co/600x800/1e293b/ffffff?text=Preview+do+Site\n(Design+Profissional)" alt="Preview do Site" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                        <div class="absolute inset-0 bg-gradient-to-t from-agency-900 via-transparent to-transparent"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-1 flex flex-col justify-center slide-up" style="animation-delay: 0.3s;">
+                
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-agency-500/10 border border-agency-500/20 text-agency-400 text-sm font-medium w-max mb-6">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    Projeto Concluído
+                </div>
+
+                <h2 class="text-4xl md:text-5xl font-serif font-bold text-white mb-6 leading-tight">
+                    Parabéns!<br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-agency-400 to-agency-500">Você recebeu seu site profissional.</span>
+                </h2>
+
+                <div class="space-y-6 text-slate-300 text-lg leading-relaxed mb-10">
+                    <p>
+                        É com grande satisfação que entregamos a sua nova plataforma digital. Desenvolvemos este projeto de forma estratégica, unindo design de alto padrão e as melhores tecnologias de performance e conversão.
+                    </p>
+                    <p>
+                        Seu site agora é uma ferramenta poderosa, pronta para atrair clientes, transmitir autoridade e alavancar os resultados do seu negócio no ambiente digital.
+                    </p>
+                    <div class="p-5 rounded-xl glass-panel border-l-4 border-l-agency-500">
+                        <h4 class="text-white font-medium mb-2">Próximos passos:</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-400 space-y-2">
+                            <li>Acesse o link abaixo para visualizar a versão final.</li>
+                            <li>Teste a navegação em seu computador e celular.</li>
+                            <li>Compartilhe sua nova conquista com seus clientes!</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Botão Principal de Acesso -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="https://www.sitedosclientes.com.br" target="_blank" 
+                        class="px-8 py-4 rounded-xl bg-gradient-to-r from-agency-500 to-blue-600 hover:from-agency-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3">
+                        Acessar Meu Site
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </a>
+                    
+                    <button id="btn-support" class="px-8 py-4 rounded-xl glass-panel text-white font-semibold hover:bg-slate-800 transition-all flex items-center justify-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        Falar com Suporte
+                    </button>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Elementos de fundo dinâmicos (efeito visual premium) -->
+        <div class="fixed top-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-agency-500/10 blur-[120px] pointer-events-none -z-10"></div>
+        <div class="fixed bottom-[-20%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none -z-10"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Configuração do ambiente dinâmico
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'portal-agencia';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            // Fake config para evitar erros se rodado localmente sem o ambiente
+            apiKey: "mock", authDomain: "mock", projectId: "mock"
+        };
+        const initialToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Inicializa Firebase
+        let app, auth, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+        } catch (e) {
+            console.error("Erro ao inicializar Firebase", e);
+        }
+
+        // Variáveis de Estado UI
+        const views = {
+            login: document.getElementById('login-view'),
+            dashboard: document.getElementById('dashboard-view')
+        };
+        const ui = {
+            loginForm: document.getElementById('login-form'),
+            emailInput: document.getElementById('email'),
+            passInput: document.getElementById('password'),
+            btnLogin: document.getElementById('btn-login'),
+            btnLogout: document.getElementById('btn-logout'),
+            btnSupport: document.getElementById('btn-support'),
+            userDisplay: document.getElementById('user-display'),
+            toastContainer: document.getElementById('toast-container')
+        };
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'bg-green-500/20 border-green-500/50 text-green-300',
+                error: 'bg-red-500/20 border-red-500/50 text-red-300',
+                info: 'bg-blue-500/20 border-blue-500/50 text-blue-300'
+            };
+            
+            toast.className = `px-4 py-3 rounded-lg border backdrop-blur-md shadow-lg transform transition-all duration-300 translate-x-full ${colors[type]}`;
+            toast.innerHTML = `<p class="text-sm font-medium">${message}</p>`;
+            
+            ui.toastContainer.appendChild(toast);
+            
+            // Animação de entrada
+            setTimeout(() => toast.classList.remove('translate-x-full'), 10);
+            
+            // Remove após 3.5s
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function switchView(viewName) {
+            Object.values(views).forEach(v => {
+                v.classList.add('hidden');
+                v.classList.remove('flex');
+            });
+            views[viewName].classList.remove('hidden');
+            if(viewName === 'dashboard') {
+                views[viewName].classList.add('flex');
+            }
+        }
+
+        function setBtnLoading(btn, isLoading) {
+            if (isLoading) {
+                btn.disabled = true;
+                btn.dataset.originalText = btn.innerHTML;
+                btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Acessando...`;
+                btn.classList.add('opacity-80', 'cursor-not-allowed');
+            } else {
+                btn.disabled = false;
+                if(btn.dataset.originalText) btn.innerHTML = btn.dataset.originalText;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+            }
+        }
+
+        
+        // 1. REGRA MANDATÓRIA: Autenticar o ambiente da plataforma primeiro
+        async function initEnvironmentAuth() {
+            try {
+                if (initialToken) {
+                    await signInWithCustomToken(auth, initialToken);
+                    console.log("Ambiente autenticado (Custom Token)");
+                } else {
+                    await signInAnonymously(auth);
+                    console.log("Ambiente autenticado (Anônimo)");
+                }
+            } catch (err) {
+                console.error("Erro na autenticação do sistema:", err);
+            }
+        }
+
+        // Inicializa Auth do sistema imediatamente
+        initEnvironmentAuth();
+
+        // 2. Lógica de Login do Cliente (Simulada para visualização, mas com estrutura real)
+        ui.loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = ui.emailInput.value.trim();
+            const password = ui.passInput.value;
+            
+            if(!email || !password) {
+                showToast('Preencha email e senha.', 'error');
+                return;
+            }
+
+            setBtnLoading(ui.btnLogin, true);
+
+            // =====================================================================
+            // NOTA PARA PRODUÇÃO (Quando você hospedar no seu próprio domínio):
+            // Descomente o bloco abaixo para usar o Login Real com E-mail/Senha do Firebase.
+            // =====================================================================
+            /*
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                // Login sucesso!
+            } catch (error) {
+                showToast('Usuário ou senha inválidos.', 'error');
+                setBtnLoading(ui.btnLogin, false);
+                return;
+            }
+            */
+            // =====================================================================
+
+            // SIMULAÇÃO VISUAL: Como estamos em um ambiente de preview e o sistema já
+            // fez o auth anônimo, vamos simular o sucesso visual do login para demonstração.
+            setTimeout(async () => {
+                
+                // Formatar o nome a partir do email (ex: joao@empresa -> Joao)
+                const namePart = email.split('@')[0];
+                const displayName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+                
+                ui.userDisplay.textContent = displayName;
+                
+                // Salvar registro de acesso no Firestore (Uso do DB Mandatório)
+                try {
+                    const user = auth.currentUser;
+                    if (user) {
+                        // REGRA: Caminho exato /artifacts/{appId}/users/{userId}/{collectionName}
+                        const logRef = doc(db, 'artifacts', appId, 'users', user.uid, 'accessLogs', Date.now().toString());
+                        await setDoc(logRef, {
+                            clientEmail: email,
+                            accessedAt: serverTimestamp(),
+                            action: 'viewed_dashboard'
+                        });
+                    }
+                } catch (dbErr) {
+                    console.log("Firestore apenas demonstrativo, ignorando erro se houver restrição.", dbErr);
+                }
+
+                setBtnLoading(ui.btnLogin, false);
+                ui.loginForm.reset();
+                showToast('Acesso liberado com sucesso!', 'success');
+                switchView('dashboard');
+                
+            }, 1200); // delay falso para dar sensação de carregamento de segurança
+        });
+
+        ui.btnLogout.addEventListener('click', () => {
+            // Em produção real com auth de email: signOut(auth)
+            showToast('Sessão encerrada.', 'info');
+            switchView('login');
+        });
+
+        ui.btnSupport.addEventListener('click', () => {
+            // Aqui você poderia colocar o link do WhatsApp da sua agência
+            showToast('Redirecionando para o WhatsApp do suporte...', 'info');
+            // window.open('https://wa.me/SEUNUMERO', '_blank');
+        });
+
+    </script>
+</body>
+</html>
