@@ -583,7 +583,7 @@
             }
             
             try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'deliveries', docId));
+                await deleteDoc(doc(db, 'deliveries', docId));
                 showToast('Registro apagado.', 'info');
             } catch (error) {
                 console.error("Erro ao deletar:", error);
